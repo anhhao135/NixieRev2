@@ -1,6 +1,6 @@
 main.c:58:6:writeNixie1Number	11
 main.c:132:6:writeNixie2Number	11
-main.c:212:5:main	3
-main.c:279:6:SystemClock_Config	3
-main.c:320:13:MX_GPIO_Init	1
-main.c:372:6:Error_Handler	1
+main.c:212:5:main	2
+main.c:273:6:SystemClock_Config	3
+main.c:314:13:MX_GPIO_Init	1
+main.c:366:6:Error_Handler	1

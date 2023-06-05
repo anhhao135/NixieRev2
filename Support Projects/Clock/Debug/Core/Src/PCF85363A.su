@@ -1,0 +1,4 @@
+../Core/Src/PCF85363A.cpp:11:1:PCF85363A::PCF85363A(I2C_HandleTypeDef&)	16	static
+../Core/Src/PCF85363A.cpp:13:19:HAL_StatusTypeDef PCF85363A::ReadRegister(uint8_t, uint8_t&)	48	static
+../Core/Src/PCF85363A.cpp:17:19:HAL_StatusTypeDef PCF85363A::WriteRegister(uint8_t, uint8_t&)	48	static
+../Core/Src/PCF85363A.cpp:21:5:int PCF85363A::GetSeconds()	32	static

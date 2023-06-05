@@ -1,0 +1,4 @@
+main.cpp:69:6:void writeSegmentNumber(int)	11
+main.cpp:213:6:void SystemClock_Config()	4
+main.cpp:149:5:int main()	14
+main.cpp:535:6:void Error_Handler()	1

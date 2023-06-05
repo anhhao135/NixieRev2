@@ -60,8 +60,8 @@ all: main-build
 main-build: Nixie_Rev2.elf secondary-outputs
 
 # Tool invocations
-Nixie_Rev2.elf Nixie_Rev2.map: $(OBJS) $(USER_OBJS) C:\Users\hle\STM32CubeIDE\workspace_1.12.0\Nixie_Rev2\STM32G030F6PX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Nixie_Rev2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\hle\STM32CubeIDE\workspace_1.12.0\Nixie_Rev2\STM32G030F6PX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Nixie_Rev2.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Nixie_Rev2.elf Nixie_Rev2.map: $(OBJS) $(USER_OBJS) C:\Repos\NixieRev2\STM32G030F6PX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Nixie_Rev2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Repos\NixieRev2\STM32G030F6PX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Nixie_Rev2.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -1,0 +1,4 @@
+../Core/Src/main.cpp:69:6:void writeSegmentNumber(int)	8	static
+../Core/Src/main.cpp:213:6:void SystemClock_Config()	112	static,ignoring_inline_asm
+../Core/Src/main.cpp:149:5:int main()	128	static,ignoring_inline_asm
+../Core/Src/main.cpp:535:6:void Error_Handler()	0	static,ignoring_inline_asm

@@ -247,10 +247,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+	HAL_GPIO_WritePin(GPIOA, NIXIE_SHUTDOWN_Pin, 0);
 
 
-
-	HAL_Delay(50);
+	HAL_Delay(100);
 	HAL_GPIO_TogglePin(LED_BLINK_GPIO_Port, LED_BLINK_Pin);
 	seconds++;
 
@@ -258,12 +258,6 @@ int main(void)
 		seconds = 0;
 	}
 
-	if (seconds > 50){
-		HAL_GPIO_WritePin(GPIOA, NIXIE_SHUTDOWN_Pin, 0);
-	}
-	else {
-		HAL_GPIO_WritePin(GPIOA, NIXIE_SHUTDOWN_Pin, 1);
-	}
 
 	writeNixie2Number(seconds % 10);
 	writeNixie1Number(seconds / 10);

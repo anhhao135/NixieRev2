@@ -75,8 +75,8 @@ all: main-build
 main-build: Clock.elf secondary-outputs
 
 # Tool invocations
-Clock.elf Clock.map: $(OBJS) $(USER_OBJS) C:\Users\hle\STM32CubeIDE\workspace_1.12.0\Clock\STM32F072CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "Clock.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\hle\STM32CubeIDE\workspace_1.12.0\Clock\STM32F072CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Clock.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Clock.elf Clock.map: $(OBJS) $(USER_OBJS) C:\Repos\NixieRev2\Support\ Projects\Clock\STM32F072CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "Clock.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Repos\NixieRev2\Support Projects\Clock\STM32F072CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Clock.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -31,7 +31,34 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define PCF85363A_I2C_ADDR (0x51 << 1) //1010001 in binary, 9.3.1 in datasheet, left bit shift to allow RW LSB
 
+#define IMU_I2C_ADDR (0b1101000 << 1)
+#define IMU_REG_DEVICE_CONFIG 0x01
+#define IMU_REG_DRIVE_CONFIG2 0x04
+#define IMU_REG_WHOAMI 0x75
+#define IMU_REG_TEMP_DATA1 0x09
+#define IMU_REG_TEMP_DATA2 0x0A
+
+
+
+
+
+#define PCF85363A_REG_BATSWITCH 0x26
+#define PCF85363A_REG_FUNCTION 0x28
+#define PCF85363A_REG_RESETS 0x2F
+
+
+//RTC MODE
+
+#define PCF85363A_REG_100THSECS 0x00
+#define PCF85363A_REG_SECS 0x01
+#define PCF85363A_REG_MINS 0x02
+#define PCF85363A_REG_HOURS 0x03
+#define PCF85363A_REG_DAYS 0x04
+#define PCF85363A_REG_WEEKDAYS 0x05
+#define PCF85363A_REG_MONTHS 0x06
+#define PCF85363A_REG_YEARS 0x07
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -40,6 +67,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN PV */
 
@@ -48,12 +76,42 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+
+int GetSeconds(){
+	uint8_t data;
+	HAL_I2C_Mem_Read(&hi2c1, PCF85363A_I2C_ADDR, PCF85363A_REG_SECS, I2C_MEMADD_SIZE_8BIT, &data, 1, HAL_MAX_DELAY);
+
+	uint8_t tens = (data & 0b01110000) >> 4;
+	uint8_t digits = data & 0b00001111;
+	return tens * 10 + digits;
+}
+
+int IMURead(){
+	uint8_t data;
+	HAL_I2C_Mem_Read(&hi2c1, IMU_I2C_ADDR, IMU_REG_WHOAMI, I2C_MEMADD_SIZE_8BIT, &data, 1, HAL_MAX_DELAY);
+
+	return data;
+}
+
+double GetIMUTemp(){
+
+	uint8_t data1;
+	HAL_I2C_Mem_Read(&hi2c1, IMU_I2C_ADDR, IMU_REG_TEMP_DATA1, I2C_MEMADD_SIZE_8BIT, &data1, 1, HAL_MAX_DELAY);
+	uint8_t data0;
+	HAL_I2C_Mem_Read(&hi2c1, IMU_I2C_ADDR, IMU_REG_TEMP_DATA0, I2C_MEMADD_SIZE_8BIT, &data0, 1, HAL_MAX_DELAY);
+
+	return data;
+}
+
+
 
 void writeNixie1Number(int number){
 
@@ -233,9 +291,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   int seconds = 0;
+  int IMUReadData = 0;
+
+  IMUReadData = IMURead();
 
   /* USER CODE END 2 */
 
@@ -243,6 +305,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	seconds = GetSeconds();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -252,7 +316,6 @@ int main(void)
 
 	HAL_Delay(100);
 	HAL_GPIO_TogglePin(LED_BLINK_GPIO_Port, LED_BLINK_Pin);
-	seconds++;
 
 	if (seconds == 100){
 		seconds = 0;
@@ -307,6 +370,54 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x2000090E;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -318,6 +429,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
